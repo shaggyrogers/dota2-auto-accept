@@ -13,12 +13,12 @@ Only Windows is currently supported.
 
 ## Setup/Installation
 
-**IMPORTANT**: You will need to manually add the path to tesseract (likely C:\Program Files\Tesseract-OCR) to PATH. 
+**IMPORTANT**: You will need to manually add the directory containing tesseract.exe (likely C:\Program Files\Tesseract-OCR) to PATH. 
 Otherwise, the script will fail suddenly when the accept button appears.
 
 To enable notifications via Pushbullet, create a file '.pushbullet-token' in the project directory containing your access token.
 
 ## Usage
 
-    cd dota-2-auto-accept
+    cd dota2-auto-accept
     uv run python main.py
