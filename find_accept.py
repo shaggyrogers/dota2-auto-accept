@@ -125,4 +125,4 @@ def _isAcceptBtn(candidate: Image) -> bool:
     # Run OCR
     text = pytesseract.image_to_string(candidate.filter(whiteFilter))
 
-    return text and text.split()[0].lower() == "accept"
+    return text.strip().lower() == "accept"

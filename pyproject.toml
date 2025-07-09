@@ -8,4 +8,5 @@ dependencies = [
     "pillow>=11.3.0",
     "pytesseract>=0.3.13",
     "pytest>=8.4.1",
+    "requests>=2.32.4",
 ]

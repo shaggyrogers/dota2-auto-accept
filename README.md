@@ -10,6 +10,10 @@ WIP - not yet fully functional!
 * uv
 * tesseract
 
+## Setup/Installation
+
+For notifications via pushbullet, create a file '.pushbullet-token' in the project directory containing your access token.
+
 ## Usage
 
     cd dota-2-auto-accept
