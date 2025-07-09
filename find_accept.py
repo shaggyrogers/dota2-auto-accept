@@ -3,7 +3,7 @@
   find_accept.py
   ==============
 
-  Description:           Heuristic function for locating the accept button
+  Description:           Logic for detecting and locating the accept button
   Author:                Michael De Pasquale
   Creation Date:         2025-07-08
   Modification Date:     2025-07-09
@@ -12,10 +12,9 @@
 
 import logging
 import math
-from pathlib import Path
 from typing import Union
 
-from PIL import Image, ImageChops, ImageFilter, ImageStat
+from PIL import Image, ImageChops, ImageFilter
 import pytesseract
 
 
@@ -46,7 +45,7 @@ def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple, None]:
     originalImg = img.copy()
     width, height = img.size
 
-    # Scale region to image size
+    # Scale region to image size, crop image
     region = (
         region[0] * width,
         region[1] * height,
@@ -88,18 +87,19 @@ def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple, None]:
 
         return None
 
-    # Get accept button from unfiltered image
-    btnImg = originalImg.crop(
-        (
-            region[0] + bbox[0],
-            region[1] + bbox[1],
-            region[0] + bbox[2],
-            region[1] + bbox[3],
+    # Check unfiltered accept button is valid
+    if not _isAcceptBtn(
+        originalImg.crop(
+            (
+                region[0] + bbox[0],
+                region[1] + bbox[1],
+                region[0] + bbox[2],
+                region[1] + bbox[3],
+            )
         )
-    )
+    ):
+        LOG.debug(f"Candidate does not contain accept text")
 
-    # Compare with example accept button
-    if not _isAcceptBtn(btnImg):
         return None
 
     return (
