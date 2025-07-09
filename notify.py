@@ -34,7 +34,7 @@ else:
     LOG.warning("Notifications disabled - .pushbullet-token is missing. See README.")
 
 
-def notify(title: str, body: str) -> None:
+def sendNotification(title: str, body: str) -> None:
     """Send a push notification via pushbullet, with given title and body.
     Aborts immediately if no token was found.
     """
