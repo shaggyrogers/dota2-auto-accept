@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pillow>=11.3.0",
+    "pyautogui>=0.9.54",
+    "pygetwindow>=0.0.9",
     "pytesseract>=0.3.13",
     "pytest>=8.4.1",
     "requests>=2.32.4",
