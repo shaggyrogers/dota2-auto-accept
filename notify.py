@@ -17,7 +17,7 @@ from pathlib import Path
 import requests
 
 LOG = logging.getLogger(__file__)
-LOG.setLevel("DEBUG")
+# LOG.setLevel("DEBUG")
 
 PUSHBULLET_TOKEN_PATH = Path("./.pushbullet-token")
 PUSHBULLET_TOKEN = None

@@ -19,7 +19,7 @@ import pytesseract
 
 
 LOG = logging.getLogger(__file__)
-LOG.setLevel("DEBUG")
+# LOG.setLevel("DEBUG")
 
 # Crop regions for 1920x1080 with and without Dota Plus
 REGION_DOTA_PLUS = (577 / 1920, 235 / 1080, 1343 / 1920, 746 / 1080)
