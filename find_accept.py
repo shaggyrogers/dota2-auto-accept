@@ -3,7 +3,7 @@
   find_accept.py
   ==============
 
-  Description:           Logic for detecting and locating the accept button
+  Description:           Logic for detecting and locating the accept and ready buttons.
   Author:                Michael De Pasquale
   Creation Date:         2025-07-08
   Modification Date:     2025-07-09
@@ -26,9 +26,9 @@ REGION_DOTA_PLUS = (577 / 1920, 235 / 1080, 1343 / 1920, 746 / 1080)
 REGION_NORMAL = (577 / 1920, 363 / 1080, 1344 / 1920, 618 / 1080)
 
 
-def findAccept(img: Image) -> Union[tuple, None]:
-    """Find an accept button in img. Returns the coordinates of the center of the
-    button if found, None otherwise.
+def findAcceptOrReady(img: Image) -> Union[tuple[str, float, float], None]:
+    """Find an accept/ready button in img. Returns a tuple with the button text and center coordinates
+    if found, None otherwise.
     """
     if not (result := _findAcceptRegion(img, REGION_DOTA_PLUS)):
         result = _findAcceptRegion(img, REGION_NORMAL)
@@ -36,10 +36,10 @@ def findAccept(img: Image) -> Union[tuple, None]:
     return result
 
 
-def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple, None]:
-    """Look for an accept button in the given region, given as 4-tuple with each element
+def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple[str, float, float], None]:
+    """Look for an accept/ready button in the given region, given as 4-tuple with each element
     between 0 and 1.
-    Returns the coordinates of the center of the button if found, None if otherwise.
+    Returns the text and coordinates of the center of the button if found, None if otherwise.
     """
     img = img.convert("RGB")
     originalImg = img.copy()
@@ -88,7 +88,7 @@ def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple, None]:
         return None
 
     # Check unfiltered accept button is valid
-    if not _isAcceptBtn(
+    btnText = _getButtonText(
         originalImg.crop(
             (
                 region[0] + bbox[0],
@@ -97,19 +97,23 @@ def _findAcceptRegion(img: Image, region: tuple) -> Union[tuple, None]:
                 region[1] + bbox[3],
             )
         )
-    ):
-        LOG.debug(f"Candidate does not contain accept text")
+    )
+
+
+    if btnText not in ("accept", "ready"):
+        LOG.debug(f"Unrecognised button text: '{btnText}'")
 
         return None
 
     return (
+        btnText,
         region[0] + bbox[0] + (bbox[2] - bbox[0]) / 2,
         region[1] + bbox[1] + (bbox[3] - bbox[1]) / 2,
     )
 
 
-def _isAcceptBtn(candidate: Image) -> bool:
-    """Return True if candidate is an accept button, False otherwise."""
+def _getButtonText(candidate: Image) -> str:
+    """ Run OCR on the image, returning lowercase text. """
 
     def _makeWhiteColorFilter(
         r: float, g: float, b: float
@@ -125,4 +129,4 @@ def _isAcceptBtn(candidate: Image) -> bool:
     # Run OCR
     text = pytesseract.image_to_string(candidate.filter(whiteFilter))
 
-    return text.strip().lower() == "accept"
+    return text.strip().lower()

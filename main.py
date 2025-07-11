@@ -19,7 +19,7 @@ from PIL import Image
 import pyautogui
 import pygetwindow
 
-from find_accept import findAccept
+from find_accept import findAcceptOrReady
 from notify import sendNotification
 
 logging.basicConfig()
@@ -29,10 +29,9 @@ LOG.setLevel("DEBUG")
 # Delay between checks
 POLLING_RATE = 5
 
-# TODO: Also click ready check button
-
-# FIXME: Add check here to ensure tesseract is in PATH. 
+# FIXME: Add check here to ensure tesseract is in PATH.
 # If not, the script will fail suddenly when the Accept button appears...
+
 
 def poll() -> None:
     if not (window := pygetwindow.getWindowsWithTitle("Dota 2")):
@@ -56,17 +55,23 @@ def poll() -> None:
     assert window.topleft.x == 0 and window.topleft.y == 0
     screenshot = pyautogui.screenshot()
 
-    if not (btnLoc := findAccept(screenshot)):
-        LOG.debug("No accept button found, skipping...")
+    if not (btnInfo := findAcceptOrReady(screenshot)):
+        LOG.debug("No button found, skipping...")
 
         return
-        
-    # Accept button found, click accept button and send notification
-    LOG.info(f"Found accept button @ {btnLoc}!")
-    pyautogui.click(btnLoc[0], btnLoc[1])
-    sendNotification("Dota 2", "A game has been accepted!")
+
+    # Button found, click and send appropriate notification if accept
+    assert btnInfo[0] in ("accept", "ready"), f"Unexpected button text: {btnInfo[0]}"
+    LOG.info(f"Found {btnInfo[0]} button @ {btnInfo[1:]}!")
+    pyautogui.click(btnInfo[1], btnInfo[2])
+
+    if btnInfo[0] == "accept":
+        sendNotification("Dota 2", "A game has been accepted!")
+
 
 def main(*args) -> None:
+    LOG.info(f"Started. Please ensure the game window is visible. Polling every {POLLING_RATE}s.")
+
     while True:
         time.sleep(POLLING_RATE)
 
