@@ -18,7 +18,6 @@ import time
 from PIL import Image
 import pyautogui
 import pygetwindow
-import requests
 
 from find_accept import findAccept
 from notify import sendNotification
@@ -30,6 +29,7 @@ LOG.setLevel("DEBUG")
 # Delay between checks
 POLLING_RATE = 5
 
+# TODO: Also click ready check button
 
 # FIXME: Add check here to ensure tesseract is in PATH. 
 # If not, the script will fail suddenly when the Accept button appears...
@@ -41,13 +41,20 @@ def poll() -> None:
         return
 
     window = window[0]
-    window.activate()
+
+    # Focus window to ensure it's not behind anything
+    # This fails sometimes (apparently with ERROR_SUCCESS)
+    try:
+        window.activate()
+
+    except pygetwindow.PyGetWindowException as ex:
+        # Probably better to explicitly check code is 0
+        LOG.warning(f"Failed to activate game window, continuing: {repr(ex)}")
 
     # FIXME: pyautogui.screenshot() only includes the primary monitor? playing the game on another monitor will likely
     # result in silent failure. As a hacky guard against this, just check the top left of the window is at (0, 0)
     assert window.topleft.x == 0 and window.topleft.y == 0
     screenshot = pyautogui.screenshot()
-
 
     if not (btnLoc := findAccept(screenshot)):
         LOG.debug("No accept button found, skipping...")
@@ -55,7 +62,7 @@ def poll() -> None:
         return
         
     # Accept button found, click accept button and send notification
-    LOG.info("Found accept button @ {btnLoc}!")
+    LOG.info(f"Found accept button @ {btnLoc}!")
     pyautogui.click(btnLoc[0], btnLoc[1])
     sendNotification("Dota 2", "A game has been accepted!")
 
