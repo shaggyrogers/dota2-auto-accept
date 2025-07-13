@@ -18,6 +18,7 @@ import time
 from PIL import Image
 import pyautogui
 import pygetwindow
+import pytesseract
 
 import arguably
 from find_accept import findAcceptOrReady
@@ -30,8 +31,14 @@ LOG.setLevel("INFO")
 # Delay between checks
 POLLING_RATE = 5
 
-# FIXME: Add check here to ensure tesseract is in PATH.
-# If not, the script will fail suddenly when the Accept button appears...
+# Check here to ensure tesseract is in PATH, otherwise script fails suddenly when match is found
+try:
+    pytesseract.get_tesseract_version()
+
+except pytesseract.TesseractNotFoundError:
+    LOG.error("Tesseract not found! Install Tesseract if needed and add it to PATH.")
+
+    sys.exit(1)
 
 
 def poll(notify_ready: bool = False) -> None:
@@ -53,7 +60,9 @@ def poll(notify_ready: bool = False) -> None:
 
     # FIXME: pyautogui.screenshot() only includes the primary monitor? playing the game on another monitor will likely
     # result in silent failure. As a hacky guard against this, just check the top left of the window is at (0, 0)
-    assert window.topleft.x == 0 and window.topleft.y == 0, "Window is not at (0, 0)"
+    if window.topleft.x != 0 or window.topleft.y != 0:
+        LOG.warning("Window is not at (0, 0). This may not work if you are playing the game on a secondary monitor.")
+
     screenshot = pyautogui.screenshot()
 
     if not (btnInfo := findAcceptOrReady(screenshot)):
