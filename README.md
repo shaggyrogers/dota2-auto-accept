@@ -6,11 +6,10 @@ Ready checks are also automatically accepted.
 
 Only Windows is currently supported.
 
-
 ## Requirements
 
-* python 3.8+
-* uv
+* [Python](https://www.python.org/downloads/) 3.8 or later
+* [uv](https://docs.astral.sh/uv/getting-started/installation/)
 * [tesseract](https://github.com/UB-Mannheim/tesseract/wiki)
 
 ## Setup/Installation
@@ -21,8 +20,14 @@ To enable notifications via Pushbullet, create a file '.pushbullet-token' in the
 
 ## Usage
 
+**IMPORTANT**: Ensure that the game is on your primary monitor, and takes up the entire screen. Otherwise, the script may not work correctly.
+
+Simply start the game, and run the script via `uv`:
+
     cd dota2-auto-accept
     uv run python main.py
+
+Dependencies other than those listed in the requirements section will be installed automatically.
 
 ### Options
 
