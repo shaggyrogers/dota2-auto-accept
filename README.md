@@ -14,9 +14,9 @@ Only Windows is currently supported.
 
 ## Setup/Installation
 
-**IMPORTANT**: If using the UB-Mannheim installer for tesseract, you will need to manually add the directory containing tesseract.exe (likely C:\Program Files\Tesseract-OCR) to PATH.
+**IMPORTANT**: If using the UB-Mannheim installer for tesseract, you will need to manually add the directory containing `tesseract.exe` (likely `C:\Program Files\Tesseract-OCR`) to PATH.
 
-To enable notifications via Pushbullet, create a file '.pushbullet-token' in the project directory containing your access token.
+To enable notifications via Pushbullet, create a file `.pushbullet-token` in the project directory containing your access token.
 
 ## Usage
 
