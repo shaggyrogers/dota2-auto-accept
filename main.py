@@ -94,7 +94,11 @@ def main(*args, notify_ready: bool = False) -> None:
 
         return 1
 
-    LOG.info(f"Started. Please ensure the game window is visible. Polling every {POLLING_RATE}s.")
+    LOG.info(f"Started. Please ensure the game window is visible, on your primary montitor, and fills the screen. Polling every {POLLING_RATE}s.")
+
+    # Test notification so we know this works before we find a match
+    sendNotification("Dota 2", "Running")
+    LOG.info("Sent test notification. Please ensure you have received it.")
 
     while True:
         time.sleep(POLLING_RATE)
